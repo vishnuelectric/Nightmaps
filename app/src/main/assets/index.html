@@ -1,0 +1,174 @@
+<!doctype html>
+<html style = "height:100% ">
+<head >
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<title>InstaWeather HD</title>
+<script src="js/jquery-1.11.1.min.js"> </script>
+<script type="text/javascript">
+    $(document).bind('mobileinit',function(){
+        $.mobile.changePage.defaults.changeHash = false;
+        $.mobile.hashListeningEnabled = false;
+        $.mobile.pushStateEnabled = false;
+    });
+</script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
+
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+<script src="js/jquery.mobile-1.4.3.min.js"></script>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.3.min.css" />
+
+
+
+
+	
+
+
+    
+
+</head>
+<style>
+
+
+
+
+
+</style>
+<body  style="height: 100%" >
+<div data-role="page"  id = "page">
+
+	
+		
+        
+    <div data-role="header"  class="ui-grid-b ui-bar" data-position="fixed"  style=" ;background-color: #75ACFF; color:white  ">
+		
+<div class="ui-block-a"><div class=" " style="  padding-bottom:5px; height:30px"> <a href="#menupanel" data-role="button" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext"> menu </a> 
+	<a data-role="button"  href="#searchpanel" class=" ui-btn ui-btn-icon-notext ui-corner-all ui-icon-search"> button1</a>
+	 </div>
+	 </div>
+    <div class="ui-block-b"><div class="" align="center" style=" padding-top:10px;height:30px">GPS Maps</div></div>
+    <div class="ui-block-c"><div class="" align="center" style="height:30px"> 
+
+    	
+    	<a onclick="mylocation()" data-role="button"class="ui-btn ui-btn-icon-notext ui-icon-location ui-corner-all" > location </a>
+    	
+    	<a href="#optionpanel" class="ui-btn ui-btn-icon-notext ui-icon-gear ui-corner-all"> option </a> 
+    	
+    	
+    	</div> </div>
+	</div>
+   
+	
+
+    <div role="main" id="main" style="padding:0px  ;color: white;" class="ui-content" >
+     <div id="map" style="height: 99%; width:100%; position:absolute;"> </div>
+        
+    </div><!-- /content -->
+
+	
+<div data-role="panel"  data-position= "left" data-display="reveal" data-theme="a" id="menupanel">
+    <!-- panel content goes here -->
+    
+   
+    <ul data-role="listview">
+			<li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+			<li><a href="#" onclick="street()">Street </a></li>
+			<li><a  onclick="hybrid()"> Hybrid</a></li>
+			<li><a href="#" onclick= "panaromio()">Panoramio</a></li>
+			<li><a href="#"onclick= "cycling()">Cycling</a></li>
+			<li><a href="#" onclick= "traffic()">Traffic</a></li>
+			<li><a href="#" onclick= "transit()">Transit</a></li>
+			<li><a href="#" onclick= "nav()">Navigation</a></li>
+            <li><a href="#" onclick= "purchaseall()">Unlock All</a></li>
+		<li><a href="#" onclick= "myInterface.rate()" >Rate</a></li>
+		<li><a href="#" onclick= "myInterface.share()">Share</a></li>
+		<li><a href="#" onclick= "getStreetView()">Get Free Stickers for BBM</a></li>
+
+			
+		</ul>
+		<br><br>
+		
+    
+    </div>
+    
+<div data-role="panel"  data-position= "right" data-display="reveal" data-theme="a" id="optionpanel">
+    <!-- panel content goes here -->
+    <div  > Help </div>
+    
+    <p> Welcome to simple GPS maps app <br />
+    	<a href="#menupanel" data-role="button" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext"> menu </a>  This is the menu button on clicking this you can open the menu panel to see various option to add/remove layers on map like traffic, transit etc  and you can also  goto navigation mode.
+    	 <br /> <br />
+    	 <a data-role="button"  href="#searchpanel" class=" ui-btn ui-btn-icon-notext ui-corner-all ui-icon-search">  button1</a> This is the search button click on this to see the search panel, on this page enter a city name to search and select a address then press enter key to show that place on the map.
+    	 
+    	 
+    	 <br /> <br />
+    	 Navigation help:
+    	 
+    	 On the navigation page press menu button to open menu panel, Then type the starting location and destination location to get the route between them. If you want to go to a place from your current location on map then leave the start location empty and just type on the destination location and press navigate button. 
+    	 
+    	 </p>
+    </div>
+    
+    <div data-role="panel"  data-swipe-close="false" data-position= "left" data-display="reveal" data-theme="a" id="searchpanel">
+    <!-- panel content goes here -->
+    
+     <input data-clear-btn="true" name="text-3" id="searchtext" value="" type="text">
+     	<br>
+     	Type the place name/address you want to search and then select a address from the dropdown. Then press the "enter"key on the keypad to goto that place on map.
+     
+    
+    </div>
+</div><!-- /page -->
+<script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,panoramio&key=AIzaSyBeQBZMsbtixmLiKka631KHT78EUZCNfn0&sensor=true">
+    </script>
+<!--<script src="js/index.js"></script>-->
+<script>
+		var map = L.map('map');
+
+
+
+		L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+	attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+	bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+	minZoom: 1,
+	maxZoom: 8,
+	format: 'jpg',
+	time: '',
+	tilematrixset: 'GoogleMapsCompatible_Level'}).addTo(map);
+
+		function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+
+			L.marker(e.latlng).addTo(map)
+				.bindPopup("<span style='color:black'>You are within " + radius + " meters from this point </span>").openPopup();
+
+			L.circle(e.latlng, radius).addTo(map);
+		}
+
+		function onLocationError(e) {
+			mylocation();
+		}
+		var input = document.getElementById('searchtext');
+         autocomplete = new google.maps.places.Autocomplete(input);
+       //  autocomplete.bindTo('bounds', map);
+          google.maps.event.addListener(autocomplete,'place_changed',function(){ map.panTo({lat:autocomplete.getPlace().geometry.location.lat(),lng:autocomplete.getPlace().geometry.location.lng()}); L.marker([autocomplete.getPlace().geometry.location.lat(),autocomplete.getPlace().geometry.location.lng()]).addTo(map).bindPopup("<span style='color:black'><b>"+input.value+"</b></span>").openPopup(); map.setZoom(7,{animate:true});
+
+            $("#searchpanel").panel("close");});
+$('#searchtext').keypress(function(event){
+   var keycode = (event.keyCode ? event.keyCode : event.which);
+   if(keycode == '13'){
+      searchCity();
+   }
+});
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+  function mylocation(){
+		map.locate({setView: true, maxZoom: 16,timeout:20000,enableHighAccuracy:true,maximumAge:60000});
+		}
+		mylocation();
+		</script>
+</body>
+</html>
