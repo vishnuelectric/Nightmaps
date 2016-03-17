@@ -52,7 +52,7 @@
     	
     	<a onclick="mylocation()" data-role="button"class="ui-btn ui-btn-icon-notext ui-icon-location ui-corner-all" > location </a>
     	
-    	<a href="#optionpanel" class="ui-btn ui-btn-icon-notext ui-icon-gear ui-corner-all"> option </a> 
+    	<!--<a href="#optionpanel" class="ui-btn ui-btn-icon-notext ui-icon-gear ui-corner-all"> option </a> -->
     	
     	
     	</div> </div>
@@ -72,17 +72,17 @@
    
     <ul data-role="listview">
 			<li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
-			<li><a href="#" onclick="street()">Street </a></li>
+			<!--<li><a href="#" onclick="street()">Street </a></li>
 			<li><a  onclick="hybrid()"> Hybrid</a></li>
 			<li><a href="#" onclick= "panaromio()">Panoramio</a></li>
 			<li><a href="#"onclick= "cycling()">Cycling</a></li>
 			<li><a href="#" onclick= "traffic()">Traffic</a></li>
 			<li><a href="#" onclick= "transit()">Transit</a></li>
 			<li><a href="#" onclick= "nav()">Navigation</a></li>
-            <li><a href="#" onclick= "purchaseall()">Unlock All</a></li>
+            <li><a href="#" onclick= "purchaseall()">Unlock All</a></li>-->
 		<li><a href="#" onclick= "myInterface.rate()" >Rate</a></li>
 		<li><a href="#" onclick= "myInterface.share()">Share</a></li>
-		<li><a href="#" onclick= "getStreetView()">Get Free Stickers for BBM</a></li>
+		<li><a href="#" onclick= "myInterface.getweatherfree()">Weather free</a></li>
 
 			
 		</ul>
@@ -138,15 +138,18 @@
 	tilematrixset: 'GoogleMapsCompatible_Level'}).addTo(map);
 
 		function onLocationFound(e) {
+		console.log(e);
 			var radius = e.accuracy / 2;
 
 			L.marker(e.latlng).addTo(map)
 				.bindPopup("<span style='color:black'>You are within " + radius + " meters from this point </span>").openPopup();
 
 			L.circle(e.latlng, radius).addTo(map);
+			myInterface.locationFound(e.latlng.lat,e.latlng.lng);
 		}
 
 		function onLocationError(e) {
+		console.log(e);
 			mylocation();
 		}
 		var input = document.getElementById('searchtext');
